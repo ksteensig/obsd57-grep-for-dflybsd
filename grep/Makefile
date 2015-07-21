@@ -14,7 +14,7 @@ MLINKS= grep.1 egrep.1 \
 	grep.1 zegrep.1 \
 	grep.1 zfgrep.1
 
-CFLAGS+= -Wall
+CFLAGS+= -Werror
 
 LDADD=	-lz
 DPADD=	${LIBZ}

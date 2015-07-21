@@ -571,7 +571,7 @@ grep_realloc(void *ptr, size_t size)
 void *
 grep_reallocarray(void *ptr, size_t nmemb, size_t size)
 {
-	if ((ptr = reallocarray(ptr, nmemb, size)) == NULL)
+	if ((ptr = realloc(ptr, nmemb * size)) == NULL)
 		err(2, "reallocarray");
 	return ptr;
 }

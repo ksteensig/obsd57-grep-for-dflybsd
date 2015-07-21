@@ -60,15 +60,15 @@ gzfgetln(gzFile *f, size_t *len)
 	int		c;
 
 	for (n = 0; ; ++n) {
-		c = gzgetc(f);
+		c = gzgetc(*f);
 		if (c == -1) {
 			const char *gzerrstr;
 			int gzerr;
 
-			if (gzeof(f))
+			if (gzeof(*f))
 				break;
 
-			gzerrstr = gzerror(f, &gzerr);
+			gzerrstr = gzerror(*f, &gzerr);
 			if (gzerr == Z_ERRNO)
 				err(2, "%s", fname);
 			else
@@ -83,7 +83,7 @@ gzfgetln(gzFile *f, size_t *len)
 		lnbuf[n] = c;
 	}
 
-	if (gzeof(f) && n == 0)
+	if (gzeof(*f) && n == 0)
 		return NULL;
 	*len = n;
 	return lnbuf;
@@ -106,7 +106,7 @@ grep_fdopen(int fd, char *mode)
 	if (Zflag) {
 		f->type = FILE_GZIP;
 		f->noseek = lseek(fd, 0L, SEEK_SET) == -1;
-		if ((f->gzf = gzdopen(fd, mode)) != NULL)
+		if ((*(f->gzf) = gzdopen(fd, mode)) != NULL)
 			return f;
 	} else
 #endif
@@ -134,7 +134,7 @@ grep_open(char *path, char *mode)
 #ifndef NOZ
 	if (Zflag) {
 		f->type = FILE_GZIP;
-		if ((f->gzf = gzopen(fname, mode)) != NULL)
+		if ((*(f->gzf) = gzopen(fname, mode)) != NULL)
 			return f;
 	} else
 #endif
@@ -212,7 +212,7 @@ grep_close(file_t *f)
 #endif
 #ifndef NOZ
 	case FILE_GZIP:
-		gzclose(f->gzf);
+		gzclose(*(f->gzf));
 		break;
 #endif
 	default:
